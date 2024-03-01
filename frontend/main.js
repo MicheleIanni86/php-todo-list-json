@@ -16,21 +16,34 @@ const app = createApp({
 
     methods: {
         fetchTodoList() {
-            axios.get('http://localhost/php-todo-list-json/backend/api/get-list.php').then((response) => {
+            axios.get('../backend/api/get-list.php').then((response) => {
                 this.lists = response.data;
             });
         },
 
         addToDo() {
-            console.log("Aggiungi questo todo: " + this.newTodo.text);
+            const todo = this.newTodo.text;
             this.newTodo.text = '';
-        }
+
+            const data = { todo: todo };
+
+            const params = {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            };
+
+            axios.post('../backend/api/store-list.php', data, params).then((response) => {
+                console.log(response.data);
+                this.lists = response.data;
+
+            });
+
+        },
+
     },
 
     mounted() {
         this.fetchTodoList();
-    }
+    },
 });
-
 
 app.mount('#root');
